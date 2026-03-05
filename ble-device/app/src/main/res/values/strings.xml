@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">BLE Device</string>
+    <string name="select_a_role">Select a Role</string>
+    <string name="central_role">Central Role</string>
+    <string name="peripheral_role">Peripheral Role</string>
+    <string name="dual_role">Dual Role</string>
+    <string name="system_information">System Information</string>
+    <string name="get_mobile_number">Get Mobile Number</string>
+    <string name="connect">O+++O</string>
+    <string name="disconnect">--X--</string>
+    <string name="data_transfer">Chat</string>
+    <string name="log">Log</string>
+    <string name="clear_log">Clear Log</string>
+    <string name="advertising">Advertising</string>
+    <string name="must_accept_all_required_permissions">You must accept all required permissions to continue using this application.</string>
+    <string name="paired_device_list">Paired Device List</string>
+    <string name="scanned_device_list">Scanned Device List</string>
+    <string name="connected_device_list">Connected Device List</string>
+    <string name="settings">Settings</string>
+    <string name="auto_connect_flag">Auto-Connect Flag </string>
+</resources>
