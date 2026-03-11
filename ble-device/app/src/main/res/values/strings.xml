@@ -8,7 +8,9 @@
     <string name="get_mobile_number">Get Mobile Number</string>
     <string name="connect">O+++O</string>
     <string name="disconnect">--X--</string>
-    <string name="data_transfer">Chat</string>
+    <string name="chat">Chat</string>
+    <string name="send">Send</string>
+    <string name="message">Message</string>
     <string name="log">Log</string>
     <string name="clear_log">Clear Log</string>
     <string name="advertising">Advertising</string>

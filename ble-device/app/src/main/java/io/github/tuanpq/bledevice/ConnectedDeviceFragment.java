@@ -85,8 +85,8 @@ public class ConnectedDeviceFragment extends Fragment implements ConnectedDevice
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     @Override
-    public void onDataTransferButtonClicked(ConnectedDeviceItem item) {
-
+    public void onChatButtonClicked(ConnectedDeviceItem item) {
+        mPeripheralRoleActivity.showChatView(item);
     }
 
     public void notifyDeviceConnectionStateChange(String name, String macAddress, int newState) {

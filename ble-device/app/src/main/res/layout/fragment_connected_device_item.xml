@@ -29,8 +29,8 @@
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <Button
-        android:id="@+id/data_transfer"
-        android:text="@string/data_transfer"
+        android:id="@+id/chat"
+        android:text="@string/chat"
         android:layout_width="0dp"
         android:layout_weight="0.3"
         android:fontFamily="monospace"

@@ -103,6 +103,10 @@ public class PeripheralRoleActivity extends AppCompatActivity {
         }
     }
 
+    public void showChatView(ConnectedDeviceItem item) {
+        ChatDialogFragment.newInstance(item).show(getSupportFragmentManager(), ChatDialogFragment.TAG);
+    }
+
     @SuppressLint({"MissingPermission", "HardwareIds", "DefaultLocale"})
     private void initialize() {
         mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);

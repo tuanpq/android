@@ -36,9 +36,9 @@ public class ConnectedDeviceRecyclerViewAdapter extends RecyclerView.Adapter<Con
         holder.mItem = mValues.get(position);
         holder.mNameView.setText(mValues.get(position).getName());
         holder.mMacAddressView.setText(mValues.get(position).getMacAddress());
-        holder.mDataTransferButton.setOnClickListener(v -> {
+        holder.mChatButton.setOnClickListener(v -> {
             if (mListener != null) {
-                mListener.onDataTransferButtonClicked(holder.mItem);
+                mListener.onChatButtonClicked(holder.mItem);
             }
         });
     }
@@ -81,20 +81,20 @@ public class ConnectedDeviceRecyclerViewAdapter extends RecyclerView.Adapter<Con
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final AppCompatTextView mNameView;
         public final AppCompatTextView mMacAddressView;
-        public final AppCompatButton mDataTransferButton;
+        public final AppCompatButton mChatButton;
         public ConnectedDeviceItem mItem;
 
         public ViewHolder(FragmentConnectedDeviceItemBinding binding) {
             super(binding.getRoot());
             mNameView = (AppCompatTextView) binding.name;
             mMacAddressView = (AppCompatTextView) binding.macAddress;
-            mDataTransferButton = (AppCompatButton) binding.dataTransfer;
+            mChatButton = (AppCompatButton) binding.chat;
         }
 
     }
 
     public interface ConnectedDeviceItemClickListener {
-        void onDataTransferButtonClicked(ConnectedDeviceItem item);
+        void onChatButtonClicked(ConnectedDeviceItem item);
     }
 
 }
