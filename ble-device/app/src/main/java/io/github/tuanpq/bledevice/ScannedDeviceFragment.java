@@ -21,6 +21,7 @@ import android.bluetooth.BluetoothProfile;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
@@ -40,6 +41,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ScannedDeviceFragment extends Fragment implements ScannedDeviceRecyclerViewAdapter.ScannedDeviceItemClickListener {
@@ -70,7 +72,7 @@ public class ScannedDeviceFragment extends Fragment implements ScannedDeviceRecy
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             super.onConnectionStateChange(gatt, status, newState);
-            centralRoleActivity.addLog(TAG,"onConnectionStateChange: device = " + gatt.getDevice().getAddress() + ", status = " + status + ", state = " + newState);
+            mCentralRoleActivity.addLog(TAG,"onConnectionStateChange: device = " + gatt.getDevice().getAddress() + ", status = " + status + ", state = " + newState);
             switch (newState) {
                 case BluetoothProfile.STATE_CONNECTED:
                     if (status == BluetoothGatt.GATT_SUCCESS) {
@@ -144,12 +146,12 @@ public class ScannedDeviceFragment extends Fragment implements ScannedDeviceRecy
     public ScannedDeviceFragment() {
     }
 
-    private CentralRoleActivity centralRoleActivity;
+    private CentralRoleActivity mCentralRoleActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        centralRoleActivity = (CentralRoleActivity) getActivity();
+        mCentralRoleActivity = (CentralRoleActivity) getActivity();
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
@@ -182,7 +184,7 @@ public class ScannedDeviceFragment extends Fragment implements ScannedDeviceRecy
             disconnect();
 
             BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(item.getMacAddress().toUpperCase());
-            boolean autoConnect = centralRoleActivity.getAutoConnectFlag();
+            boolean autoConnect = mCentralRoleActivity.getAutoConnectFlag();
             mBluetoothGatt = device.connectGatt(getContext(), autoConnect, mGattCallback, BluetoothDevice.TRANSPORT_LE);
         } else {
             disconnect();
@@ -305,9 +307,60 @@ public class ScannedDeviceFragment extends Fragment implements ScannedDeviceRecy
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
             if (mScanning && result != null && result.getDevice() != null) {
+                dumpScanResult(result);
                 ScannedDeviceItem scannedDeviceItem = new ScannedDeviceItem(result.getDevice().getName(), result.getDevice().getAddress());
                 mScannedDeviceRecyclerViewAdapter.appendData(scannedDeviceItem);
             }
+        }
+
+        @SuppressLint("MissingPermission")
+        private void dumpScanResult(ScanResult result) {
+            final String TAG = this.getClass().getSimpleName();
+            BluetoothDevice bluetoothDevice = result.getDevice();
+            ScanRecord scanRecord = result.getScanRecord();
+
+            mCentralRoleActivity.addLog(TAG, "==========Dump==========");
+            mCentralRoleActivity.addLog(TAG, "BluetoothDevice:Address: " + bluetoothDevice.getAddress());
+            mCentralRoleActivity.addLog(TAG, "BluetoothDevice:Name: " + bluetoothDevice.getName());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                mCentralRoleActivity.addLog(TAG, "BluetoothDevice:Alias: " + bluetoothDevice.getAlias());
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                mCentralRoleActivity.addLog(TAG, "BluetoothDevice:Address Type: " + bluetoothDevice.getAddressType());
+            }
+            mCentralRoleActivity.addLog(TAG, "BluetoothDevice:Type: " + bluetoothDevice.getType());
+            mCentralRoleActivity.addLog(TAG, "BluetoothDevice:BluetoothClass: " + bluetoothDevice.getBluetoothClass().toString());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+                mCentralRoleActivity.addLog(TAG, "BluetoothDevice:IdentityAddressWithType: " + bluetoothDevice.getIdentityAddressWithType());
+            }
+            mCentralRoleActivity.addLog(TAG, "BluetoothDevice:BondState: " + bluetoothDevice.getBondState());
+
+            mCentralRoleActivity.addLog(TAG, "result: " + result);
+            /*
+            mCentralRoleActivity.addLog(TAG, "ScanRecord:getAdvertiseFlags: " + scanRecord.getAdvertiseFlags());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                mCentralRoleActivity.addLog(TAG, "ScanRecord:AdvertisingDataMap: " + scanRecord.getAdvertisingDataMap());
+            }
+            mCentralRoleActivity.addLog(TAG, "ScanRecord:ServiceData: " + scanRecord.getServiceData());
+            mCentralRoleActivity.addLog(TAG, "ScanRecord:ManufacturerSpecificData: " + scanRecord.getManufacturerSpecificData());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                mCentralRoleActivity.addLog(TAG, "ScanRecord:ServiceSolicitationUuids: " + scanRecord.getServiceSolicitationUuids());
+            }
+            mCentralRoleActivity.addLog(TAG, "ScanRecord:ServiceUuids: " + scanRecord.getServiceUuids());
+            mCentralRoleActivity.addLog(TAG, "ScanRecord:TxPowerLevel: " + scanRecord.getTxPowerLevel());
+            mCentralRoleActivity.addLog(TAG, "ScanRecord:Bytes: " + Arrays.toString(scanRecord.getBytes()));
+
+            mCentralRoleActivity.addLog(TAG, "result:AdvertisingSid: " + result.getAdvertisingSid());
+            mCentralRoleActivity.addLog(TAG, "result:DataStatus: " + result.getDataStatus());
+            mCentralRoleActivity.addLog(TAG, "result:PeriodicAdvertisingInterval: " + result.getPeriodicAdvertisingInterval());
+            mCentralRoleActivity.addLog(TAG, "result:PrimaryPhy: " + result.getPrimaryPhy());
+            mCentralRoleActivity.addLog(TAG, "result:SecondaryPhy: " + result.getSecondaryPhy());
+            mCentralRoleActivity.addLog(TAG, "result:Rssi: " + result.getRssi());
+            mCentralRoleActivity.addLog(TAG, "result:TxPower: " + result.getTxPower());
+            mCentralRoleActivity.addLog(TAG, "result:Connectable: " + result.isConnectable());
+            mCentralRoleActivity.addLog(TAG, "result:Legacy: " + result.isLegacy());
+            mCentralRoleActivity.addLog(TAG, "result:TimestampNanos: " + result.getTimestampNanos());
+            */
         }
     };
 
@@ -319,7 +372,7 @@ public class ScannedDeviceFragment extends Fragment implements ScannedDeviceRecy
                 if (scannedDeviceItem.getMacAddress().equalsIgnoreCase(macAddress)) {
                     scannedDeviceItem.setState(newState);
                     final int finalPosition = position;
-                    centralRoleActivity.runOnUiThread(() -> {
+                    mCentralRoleActivity.runOnUiThread(() -> {
                         mScannedDeviceRecyclerViewAdapter.notifyItemChanged(finalPosition);
                     });
                     break;
